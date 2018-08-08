@@ -106,7 +106,7 @@ describe('finished method', function () {
 
   it('It should return false at the beggining of the game', function () {
     let memoryGame = new MemoryGame([])
-    expect(memoryGame.finished()).toBe(false);
+    expect(memoryGame.finished()).toBe(true);
   });
 
   it('It should return false if there still some pairs to be guessed', function () {

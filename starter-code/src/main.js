@@ -25,10 +25,14 @@ var cards = [
   { name: 'thor',            img: 'thor.jpg' }
 ];
 
+var g;  //to make it a global variable 
+
 $(document).ready(function(){
-  var memoryGame = new MemoryGame(cards);
+  g = new MemoryGame(cards);   //MemoryGame is referring to a class 
   var html = '';
-  memoryGame.cards.forEach(function (pic, index) {
+  g.cards.forEach(function (pic, index) {
+
+    //for each card of the game we create a div 
     html += '<div class= "card" id="card_' + pic.name + '">';
     html += '<div class="back"';
     html += '    name="'       + pic.img +  '">';
@@ -40,11 +44,36 @@ $(document).ready(function(){
   });
 
   // Add all the div's to the HTML
-  document.getElementById('memory_board').innerHTML = html;
+  $('#memory_board').html(html); //the second html is the variable in line 30.
   // Bind the click event of each element to a function
-$('.back').on('click', function () {
-   
-});
+  $('.back').on('click', function () {
+  if (g.pickedCards.length >= 2)
+    return;
+
+    g.pickedCards.push($(this).parent().attr('id'));
+    $(this).parent().addClass('picked');
+    $(this).parent().children().toggleClass("front back");
+    
+
+  if (g.pickedCards.length == 2){
+    if (!g.checkIfPair(g.pickedCards[0], g.pickedCards[1])){
+      setTimeout(function(){
+        $('.card.picked').children().toggleClass("front back");  //toggle the cards if they are not the same, after 2 sec.
+        $('.card.picked').removeClass('picked');
+        g.pickedCards = [];
+        }, 2000);
+    }
+    else{
+      $('.card.picked').removeClass('picked');
+      g.pickedCards = [];
+    }
+    updateScore(g);
+    }
+  
+  });
 });
 
-
+function updateScore(g){
+  $('#pairs_clicked').text(g.pairsClicked);
+  $('#pairs_guessed').text(g.pairsGuessed);
+}
